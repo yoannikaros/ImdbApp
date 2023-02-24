@@ -129,7 +129,11 @@ class _MovieListState extends State<MovieList> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MovieDetail(id: movie.id),
+                              builder: (context) => MovieDetail(
+                                id: movie.id,
+                                imageA: movie.image,
+                                thisname: movie.title,
+                              ),
                             ),
                           );
                         },

@@ -1,6 +1,6 @@
 import 'package:films/utils/theme.dart';
 import 'package:flutter/material.dart';
-
+import 'package:films/utils/imgae.dart';
 import '../Dashboard/dashboard_content.dart';
 import '../Widget/navbar.dart';
 
@@ -17,16 +17,16 @@ class _TopPickPageState extends State<TopPickPage> {
     return Scaffold(
       backgroundColor: background,
       body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
+        margin: const EdgeInsets.symmetric(horizontal: 20),
         child: ListView(
           children: [
-            Navbar(),
-            SizedBox(
-              height: 20,
+            const Navbar(),
+            const SizedBox(
+              height: 30,
             ),
             header(),
-            SizedBox(
-              height: 20,
+            const SizedBox(
+              height: 40,
             ),
             content()
           ],
@@ -36,43 +36,145 @@ class _TopPickPageState extends State<TopPickPage> {
   }
 
   Widget header() {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          height: 25,
-          width: 2,
-          color: secondary,
+        Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: 25,
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  child: Image.asset('assets/back.png'),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                'Top Pick',
+                textAlign: TextAlign.center,
+                style: whiteTextStyle.copyWith(fontSize: 20, fontWeight: bold),
+              ),
+            )
+          ],
         ),
-        const SizedBox(
-          width: 10,
-        ),
-        Text(
-          "Top Picks",
-          style: whiteTextStyle.copyWith(fontSize: 20, fontWeight: bold),
+        Center(
+          child: Container(
+            margin: EdgeInsets.only(left: 20),
+            child: Text(
+              'TV shows and movies just for you',
+              style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: regular),
+            ),
+          ),
         ),
       ],
     );
   }
 
+//
   Widget content() {
     return Column(
       children: [
-        Row(
-          children: [
-            DashboardContent(
-              image: 'assets/ant.jpg',
-              title: 'Ant-Man',
-              url: 'tt10954600',
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            DashboardContent(
-              image: 'assets/ant.jpg',
-              title: 'Ant-Man',
-              url: 'tt10954600',
-            ),
-          ],
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              DashboardContent(
+                image: '${listImage[0]}',
+                title: 'Project Power',
+                url: 'tt7550000',
+                widthContent: 112,
+              ),
+              // TUTUP WIDGET
+              SizedBox(
+                width: 9,
+              ),
+              // WIDGED CONTENT
+              DashboardContent(
+                  image: '${listImage[1]}',
+                  title: 'My Spy',
+                  url: 'tt8242084',
+                  widthContent: 112),
+              // TUTUP WIDGET
+
+              SizedBox(
+                width: 9,
+              ),
+
+              // WIDGED CONTENT
+              DashboardContent(
+                  image: '${listImage[2]}',
+                  title: 'Birds of Prey',
+                  url: 'tt7713068',
+                  widthContent: 110),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              DashboardContent(
+                  image: '${listImage[3]}',
+                  title: 'Spenser C',
+                  url: 'tt8629748',
+                  widthContent: 110),
+              const SizedBox(
+                width: 10,
+              ),
+              DashboardContent(
+                  image: '${listImage[4]}',
+                  title: 'Extraction',
+                  url: 'tt8936646',
+                  widthContent: 110),
+              const SizedBox(
+                width: 10,
+              ),
+              DashboardContent(
+                  image: '${listImage[5]}',
+                  title: 'All the Bright',
+                  url: 'tt3907584',
+                  widthContent: 110),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              DashboardContent(
+                  image: '${listImage[6]}',
+                  title: 'As bestas',
+                  url: 'tt15006566',
+                  widthContent: 110),
+              const SizedBox(
+                width: 10,
+              ),
+              DashboardContent(
+                  image: '${listImage[7]}',
+                  title: 'Tenet',
+                  url: 'tt6723592',
+                  widthContent: 110),
+              const SizedBox(
+                width: 10,
+              ),
+              DashboardContent(
+                  image: '${listImage[8]}',
+                  title: 'Milea: Suara dari Dilan',
+                  url: 'tt11127878',
+                  widthContent: 110),
+            ],
+          ),
         )
       ],
     );

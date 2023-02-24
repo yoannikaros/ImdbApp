@@ -51,7 +51,11 @@ class SliderWidgetContent extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => MovieDetail(id: id),
+                builder: (context) => MovieDetail(
+                  id: id,
+                  imageA: imageUrl,
+                  thisname: tittleSlider,
+                ),
               ),
             );
           },
@@ -70,14 +74,14 @@ class SliderWidgetContent extends StatelessWidget {
           ),
         ),
         Container(
-          margin: EdgeInsets.only(top: 136, left: 180),
+          margin: EdgeInsets.only(top: 136, left: 175),
           child: Text(
             "'${tittleSlider}'",
-            style: whiteTextStyle.copyWith(fontSize: 18, fontWeight: bold),
+            style: whiteTextStyle.copyWith(fontSize: 15, fontWeight: bold),
           ),
         ),
         Container(
-          margin: EdgeInsets.only(top: 158, left: 180),
+          margin: EdgeInsets.only(top: 158, left: 172),
           child: Text(
             ' Watch the trailer',
             style: nuninoWhiteTextStyle.copyWith(
@@ -91,7 +95,7 @@ class SliderWidgetContent extends StatelessWidget {
           },
           child: Container(
             width: 40,
-            margin: EdgeInsets.only(top: 134, left: 130),
+            margin: EdgeInsets.only(top: 130, left: 130),
             child: ColorFiltered(
               colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
               child: Image.asset('assets/play.png'),
