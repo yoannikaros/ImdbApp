@@ -1,15 +1,20 @@
 import 'package:films/screens/Widget/navbar.dart';
 import 'package:films/utils/theme.dart';
 import 'package:flutter/material.dart';
+import '../Dashboard/dashboard_content.dart';
 import 'MovieDetailViewModel.dart';
 import 'package:films/model/MovieDetailModel.dart';
 import 'package:films/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:films/utils/imgae.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MovieDetail extends StatefulWidget {
-  MovieDetail({required this.id});
+  MovieDetail({required this.id, required this.imageA, required this.thisname});
 
   final String id;
+  final String imageA;
+  final String thisname;
 
   @override
   _MovieDetailState createState() => _MovieDetailState();
@@ -43,7 +48,7 @@ class _MovieDetailState extends State<MovieDetail> {
             );
           } else {
             final movie = snapshot.data!;
-
+            var thisname = movie.title;
             return ListView(
               children: [
                 Column(
@@ -90,7 +95,7 @@ class _MovieDetailState extends State<MovieDetail> {
                           children: [
                             Container(
                               width: 325,
-                              height: 580,
+                              height: 420,
                               decoration: BoxDecoration(
                                   color: Colors.black12,
                                   borderRadius: BorderRadius.circular(12)),
@@ -136,7 +141,7 @@ class _MovieDetailState extends State<MovieDetail> {
                               height: 215,
                               decoration: BoxDecoration(
                                 color: Colors.black,
-                                borderRadius: BorderRadius.only(
+                                borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(3),
                                   topRight: Radius.circular(3),
                                 ),
@@ -169,21 +174,47 @@ class _MovieDetailState extends State<MovieDetail> {
                               margin: EdgeInsets.only(left: 170, top: 23),
                               child: Column(
                                 children: [
-                                  // Text(
-                                  //   movie.title,
-                                  //   style: whiteTextStyle.copyWith(
-                                  //       fontSize: 10, fontWeight: bold),
-                                  // ),
-                                  // Text(
-                                  //   'Genre: ${movie.genre.join(', ')}',
-                                  //   style: whiteTextStyle.copyWith(
-                                  //       fontSize: 10, fontWeight: bold),
-                                  // ),
-                                  // Text(
-                                  //   'actors: ${movie.actors.join(', ')}',
-                                  //   style: whiteTextStyle.copyWith(
-                                  //       fontSize: 10, fontWeight: bold),
-                                  // )
+                                  Container(
+                                    width: 148,
+                                    child: Text(
+                                      movie.title,
+                                      style: whiteTextStyle.copyWith(
+                                          fontSize: 19, fontWeight: bold),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width: 148,
+                                    child: Text(
+                                      'Type: ${movie.contentType}',
+                                      style: whiteTextStyle.copyWith(
+                                          fontSize: 10, fontWeight: bold),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width: 148,
+                                    child: Text(
+                                      'Genre: ${movie.genre.join(', ')}',
+                                      style: whiteTextStyle.copyWith(
+                                          fontSize: 10, fontWeight: bold),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width: 148,
+                                    child: Text(
+                                      'Actors: ${movie.actors.join(', ')}',
+                                      style: whiteTextStyle.copyWith(
+                                          fontSize: 10, fontWeight: bold),
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
@@ -197,11 +228,15 @@ class _MovieDetailState extends State<MovieDetail> {
                                   movie.plot,
                                   style: whiteTextStyle.copyWith(
                                       fontSize: 12, fontWeight: regular),
-                                ))
+                                )),
                           ],
                         ),
                       ),
                     ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    recomendation()
                   ],
                 ),
               ],
@@ -218,20 +253,97 @@ class _MovieDetailState extends State<MovieDetail> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          SizedBox(
+          const SizedBox(
             height: 40,
           ),
           ListTile(
-            title: Text('Item 1'),
+            title: Text('Save'),
             onTap: () {
-              Navigator.pop(context);
+              String nama = widget.thisname;
+              String gambar = widget.imageA;
+              String urlWish = widget.id;
+              saveData(nama, gambar, urlWish);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Data tersimpan ke wish list'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
           ),
-          ListTile(
-            title: Text('Item 2'),
-            onTap: () {
-              Navigator.pop(context);
-            },
+        ],
+      ),
+    );
+  }
+
+  Widget recomendation() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 40),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 25,
+                width: 2,
+                color: secondary,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                "Recomendation",
+                style: whiteTextStyle.copyWith(fontSize: 20, fontWeight: bold),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/top');
+                },
+                child: Image.asset(
+                  "assets/next.png",
+                  color: whiteColor,
+                  width: 7,
+                  height: 12,
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                DashboardContent(
+                    image: '${listImage[2]}',
+                    title: 'Birds of Prey',
+                    url: 'tt7713068',
+                    widthContent: 122),
+                const SizedBox(
+                  width: 10,
+                ),
+                DashboardContent(
+                    image: '${listImage[6]}',
+                    title: 'As bestas',
+                    url: 'tt15006566',
+                    widthContent: 122),
+                const SizedBox(
+                  width: 10,
+                ),
+                DashboardContent(
+                    image: '${listImage[4]}',
+                    title: 'Extraction',
+                    url: 'tt8936646',
+                    widthContent: 122),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
           ),
         ],
       ),
@@ -239,5 +351,10 @@ class _MovieDetailState extends State<MovieDetail> {
   }
 }
 
-
-// 'Genre: ${movie.genre.join(', ')}'
+void saveData(String nama, String gambar, String urlWish) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('nama', nama);
+  await prefs.setString('gambar', gambar);
+  await prefs.setString('url', urlWish);
+  print(nama);
+}

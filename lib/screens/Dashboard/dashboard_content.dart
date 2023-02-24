@@ -5,15 +5,27 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import '../../utils/theme.dart';
 import '../Detail/MovieDetail.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class DashboardContent extends StatelessWidget {
+class DashboardContent extends StatefulWidget {
   final String image;
   final String url;
   final String title;
+  final int widthContent;
   const DashboardContent(
-      {Key? key, required this.image, required this.url, required this.title})
+      {Key? key,
+      required this.image,
+      required this.url,
+      required this.title,
+      required this.widthContent})
       : super(key: key);
 
+  @override
+  State<DashboardContent> createState() => _DashboardContentState();
+}
+
+class _DashboardContentState extends State<DashboardContent> {
+  bool _isImageVisible = true;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -21,35 +33,71 @@ class DashboardContent extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => MovieDetail(id: url),
+            builder: (context) => MovieDetail(
+              id: widget.url,
+              imageA: widget.image,
+              thisname: widget.title,
+            ),
           ),
         );
       },
       child: Container(
-        width: 122,
+        width: widget.widthContent.toDouble(),
         height: 219,
         decoration: BoxDecoration(
             color: primary, borderRadius: BorderRadius.circular(10)),
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              height: 150,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(image),
-                    fit: BoxFit.cover,
-                  ),
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10)),
-                  color: whiteColor),
+            Stack(
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 150,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(widget.image),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10)),
+                      color: whiteColor),
+                ),
+                GestureDetector(
+                    onTap: () async {
+                      String nama = widget.title;
+                      String gambar = widget.image;
+                      String urlWish = widget.url;
+                      saveData(nama, gambar, urlWish);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Data tersimpan ke wish list'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+
+                      setState(() {
+                        _isImageVisible = false;
+                      });
+                    },
+                    child: _isImageVisible
+                        ? Container(
+                        margin: EdgeInsets.only(top: 5, left: 90),
+                        width: 20,
+                        child: Image.asset(
+                          'assets/unwish-list.png',
+                          alignment: Alignment.topRight,
+                        ))
+                : Container(),
+                ),
+              ],
             ),
             SizedBox(
               height: 12,
             ),
             Text(
-              title,
+              widget.title,
               style: whiteTextStyle.copyWith(fontSize: 10, fontWeight: bold),
             ),
             SizedBox(
@@ -57,7 +105,7 @@ class DashboardContent extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                final String url = YoutubeUrl + title;
+                final String url = YoutubeUrl + widget.title;
                 launch(url);
               },
               child: Container(
@@ -81,10 +129,18 @@ class DashboardContent extends StatelessWidget {
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void saveData(String nama, String gambar, String urlWish) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('nama', nama);
+    await prefs.setString('gambar', gambar);
+    await prefs.setString('url', urlWish);
+    print(nama);
   }
 }
